@@ -36,10 +36,10 @@ def test_seond_oldest_bank_with_credit_check():
     queue.enqueue(task3)
     queue.enqueue(task4)
 
-    assert queue.dequeue() == TaskDispatch(provider="companies_house", user_id=2)
+    assert queue.dequeue() == TaskDispatch(provider="companies_house", user_id=1)
+    assert queue.dequeue() == TaskDispatch(provider="credit_check", user_id=1)
     assert queue.dequeue() == TaskDispatch(provider="bank_statements", user_id=1)
-    assert queue.dequeue() == TaskDispatch(provider="companies_house", user_id=1)
-    assert queue.dequeue() == TaskDispatch(provider="companies_house", user_id=1)
+    assert queue.dequeue() == TaskDispatch(provider="id_verification", user_id=1)
 
 
 
@@ -158,4 +158,5 @@ def test_time_sesative_bank_statments_with_later():
     assert queue.dequeue() == TaskDispatch(provider="id_verification", user_id=2)
     assert queue.dequeue() == TaskDispatch(provider="companies_house", user_id=3)
     assert queue.dequeue() == TaskDispatch(provider="bank_statements", user_id=2)
+
 
