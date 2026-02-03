@@ -95,6 +95,7 @@ class Queue:
         tasks_to_add = [*self._collect_dependencies(item), item]
 
         indexes_to_remove = []
+        breakpoint()
         for task in tasks_to_add:
             for i, existing_task in enumerate(self._queue):
                 if task.provider == existing_task.provider and task.user_id == existing_task.user_id:
@@ -254,5 +255,6 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
