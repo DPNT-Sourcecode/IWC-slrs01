@@ -9,8 +9,9 @@ from solutions.IWC.task_types import TaskSubmission, TaskDispatch
 class Priority(IntEnum):
     """Represents the queue ordering tiers observed in the legacy system."""
     HIGH = 1
-    NORMAL = 2
-    LOW = 3
+    MIDHIGH = 2
+    NORMAL = 3
+    LOW = 4
 
 @dataclass
 class Provider:
@@ -150,7 +151,10 @@ class Queue:
                 metadata["group_earliest_timestamp"] = MAX_TIMESTAMP
                 if task_count[task.user_id] >= 3:
                     metadata["group_earliest_timestamp"] = priority_timestamps[task.user_id]
-                    metadata["priority"] = Priority.HIGH
+                    if task.provider == "bank_statements":
+                        metadata["priority"] = Priority.MIDHIGH
+                    else:
+                        metadata["priority"] = Priority.HIGH
                 else:
                     metadata["priority"] = Priority.NORMAL
             else:
@@ -267,4 +271,5 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
