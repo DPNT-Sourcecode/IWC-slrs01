@@ -149,8 +149,8 @@ def test_dedupe():
     queue.enqueue(task3)
 
     assert queue._queue[0].timestamp == datetime.strptime('2025-10-20 12:00:00', "%Y-%m-%d %H:%M:%S")
-    assert queue.dequeue() == TaskDispatch(provider="id_verification", user_id=1)
     assert queue.dequeue() == TaskDispatch(provider="bank_statements", user_id=1)
+    assert queue.dequeue() == TaskDispatch(provider="id_verification", user_id=1)
     assert queue.dequeue() == None
 
 

@@ -37,3 +37,36 @@ def test_time_sesative_bank_statements():
     assert queue.dequeue() == TaskDispatch(provider="id_verification", user_id=1)
     assert queue.dequeue() == TaskDispatch(provider="bank_statements", user_id=2)
     assert queue.dequeue() == TaskDispatch(provider="companies_house", user_id=3)
+
+def test_time_sesative_bank_statments_with_later():
+
+    task1 = TaskSubmission(
+        user_id=1,
+        provider="id_verification",
+        timestamp=datetime.strptime('2025-10-20 12:00:00', "%Y-%m-%d %H:%M:%S")
+    )
+    task2 = TaskSubmission(
+        user_id=2,
+        provider="bank_statements",
+        timestamp=datetime.strptime('2025-10-20 12:15:00', "%Y-%m-%d %H:%M:%S")
+    )
+    task3 = TaskSubmission(
+        user_id=2,
+        provider="id_verification",
+        timestamp=datetime.strptime('2025-10-20 12:02:00', "%Y-%m-%d %H:%M:%S")
+    )
+    task4 = TaskSubmission(
+        user_id=3,
+        provider="companies_house",
+        timestamp=datetime.strptime('2025-10-20 12:03:00', "%Y-%m-%d %H:%M:%S")
+    )
+
+    queue = Queue()
+    queue.enqueue(task1)
+    queue.enqueue(task2)
+    queue.enqueue(task3)
+
+    assert queue.dequeue() == TaskDispatch(provider="id_verification", user_id=1)
+    assert queue.dequeue() == TaskDispatch(provider="bank_statements", user_id=2)
+    assert queue.dequeue() == TaskDispatch(provider="companies_house", user_id=3)
+
