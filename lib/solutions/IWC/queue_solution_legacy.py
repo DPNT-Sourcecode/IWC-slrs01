@@ -101,7 +101,6 @@ class Queue:
     
     def enqueue(self, item: TaskSubmission) -> int:
         
-        
         tasks_to_add = [*self._collect_dependencies(item), item]
 
         for task in tasks_to_add:
@@ -148,6 +147,9 @@ class Queue:
                 priority_level = Priority(raw_priority)
             except (TypeError, ValueError):
                 priority_level = None
+            
+            if task.provider == "bank_statements" and self.age >= 300:
+                metadata["priority"] = Priority.NORMAL
             if priority_level is None or priority_level == Priority.NORMAL or priority_level == Priority.LOW:
                 metadata["group_earliest_timestamp"] = MAX_TIMESTAMP
                 if task_count[task.user_id] >= 3:
@@ -291,3 +293,4 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
