@@ -2,13 +2,6 @@ from solutions.IWC.queue_solution_legacy import Queue
 from solutions.IWC.task_types import TaskDispatch, TaskSubmission
 from datetime import datetime
 
-# id = IWC_R2_S8_001, req = enqueue({"provider":"companies_house","timestamp":"2025-10-20 12:02:00","user_id":1}), resp = 1
-# id = IWC_R2_S8_002, req = enqueue({"provider":"id_verification","timestamp":"2025-10-20 12:04:00","user_id":1}), resp = 2
-# id = IWC_R2_S8_003, req = enqueue({"provider":"credit_check","timestamp":"2025-10-20 12:00:00","user_id":1}), resp = 4
-# id = IWC_R2_S8_004, req = dequeue(), resp = {"provider":"companies_house","user_id":1}
-# id = IWC_R2_S8_005, req = dequeue(), resp = {"provider":"credit_check","user_id":1}
-# id = IWC_R2_S8_006, req = dequeue(), resp = {"provider":"companies_house","user_id":1}
-
 
 
 def test_dedupe_credit_check():
