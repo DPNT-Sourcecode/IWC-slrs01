@@ -2,6 +2,25 @@ from solutions.IWC.queue_solution_legacy import Queue
 from solutions.IWC.task_types import TaskDispatch, TaskSubmission
 from datetime import datetime
 
+
+
+def test_dedupe():
+    task1 = TaskSubmission(
+        user_id=1,
+        provider="companies_house",
+        timestamp=datetime.strptime('2025-10-20 12:00:05', "%Y-%m-%d %H:%M:%S")
+    )
+    task2 = TaskSubmission(
+        user_id=1,
+        provider="companies_house",
+        timestamp=datetime.strptime('2025-10-20 12:00:00', "%Y-%m-%d %H:%M:%S")
+    )
+
+    queue = Queue()
+    queue.enqueue(task1)
+    queue.enqueue(task2)
+
+
 def test_rule_of_three():
     task1 = TaskSubmission(
         user_id=1,
