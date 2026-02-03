@@ -240,4 +240,3 @@ def test_bank_statements_deprio_with_rule_of_three():
 
 #     assert queue.dequeue() == TaskDispatch(provider="companies_house", user_id=1)
 #     assert queue.dequeue() == TaskDispatch(provider="credit_check", user_id=1)
-
