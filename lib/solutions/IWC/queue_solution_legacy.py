@@ -187,8 +187,19 @@ class Queue:
         
         if len(self._queue) == 0 or len(self._queue) == 1:
             return 0
+        
+        
 
         queue_by_date = sorted(self._queue, key=attrgetter("timestamp"))
+
+        start_time = queue_by_date[0].timestamp
+        end_time = queue_by_date[len(queue_by_date)-1]
+
+        if isinstance(start_time, str):
+            start_time = datetime.strptime(queue_by_date[0].timestamp, "%Y-%m-%d %H:%M:%S")
+        if isinstance(end_time, str):
+            start_time = datetime.strptime(queue_by_date[0].timestamp, "%Y-%m-%d %H:%M:%S")
+
         time_diff = queue_by_date[0].timestamp - queue_by_date[len(queue_by_date)-1].timestamp
 
         return abs(time_diff.total_seconds())
@@ -281,5 +292,6 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
