@@ -16,13 +16,13 @@ def test_bank_statements_deprio_with_rule_of_three():
         timestamp=datetime.strptime('2025-10-20 12:00:00', "%Y-%m-%d %H:%M:%S")
     )
     task2 = TaskSubmission(
-        user_id=1,
-        provider="id_verification",
+        user_id=2,
+        provider="companies_house",
         timestamp=datetime.strptime('2025-10-20 12:01:00', "%Y-%m-%d %H:%M:%S")
     )
     task3 = TaskSubmission(
-        user_id=2,
-        provider="companies_house",
+        user_id=1,
+        provider="id_verification",
         timestamp=datetime.strptime('2025-10-20 12:02:00', "%Y-%m-%d %H:%M:%S")
     )
     task4 = TaskSubmission(
