@@ -94,12 +94,10 @@ class Queue:
         
         for i, task in enumerate(self._queue):
             if task.provider == item.provider and task.user_id == item.user_id:
-                if task.timestamp <= item.timestamp:
+                if task.timestamp >= item.timestamp:
                     self._queue.pop(i)
                 break
                 
-
-
         tasks = [*self._collect_dependencies(item), item]
 
         for task in tasks:
@@ -251,4 +249,5 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
