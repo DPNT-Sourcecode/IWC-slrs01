@@ -156,7 +156,8 @@ class Queue:
                     else:
                         metadata["priority"] = Priority.HIGH
                 else:
-                    metadata["priority"] = Priority.NORMAL
+                    if task.provider != "bank_statements":
+                        metadata["priority"] = Priority.NORMAL
             else:
                 metadata["group_earliest_timestamp"] = current_earliest
                 metadata["priority"] = priority_level
@@ -271,5 +272,6 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
