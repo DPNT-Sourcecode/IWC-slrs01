@@ -97,10 +97,9 @@ class Queue:
         return None
     
     def enqueue(self, item: TaskSubmission) -> int:
-                
+        
+        breakpoint()
         tasks_to_add = [*self._collect_dependencies(item), item]
-
-        indexes_to_remove = []
 
         for task in tasks_to_add:
 
@@ -108,36 +107,16 @@ class Queue:
 
             if duplicate_task_index:
                 if self._queue[duplicate_task_index].timestamp > task.timestamp:
-                    # replace
+                    metadata = task.metadata
+                    metadata.setdefault("priority", Priority.NORMAL)
+                    metadata.setdefault("group_earliest_timestamp", MAX_TIMESTAMP)
+                    self._queue[duplicate_task_index] = task
+
             else:
                 metadata = task.metadata
                 metadata.setdefault("priority", Priority.NORMAL)
                 metadata.setdefault("group_earliest_timestamp", MAX_TIMESTAMP)
                 self._queue.append(task)  
-
-
-
-            task_exists = False
-            for i, existing_task in enumerate(self._queue):
-                 
-                if task.provider == existing_task.provider and task.user_id == existing_task.user_id:
-                    task_exists = True
-                    if task.timestamp >= existing_task.timestamp:
-                        break
-                    else:
-                        indexes_to_remove.append(i)
-                        metadata = task.metadata
-                        metadata.setdefault("priority", Priority.NORMAL)
-                        metadata.setdefault("group_earliest_timestamp", MAX_TIMESTAMP)
-                        self._queue.append(task)
-            
-            if not task_exists:
-                metadata = task.metadata
-                metadata.setdefault("priority", Priority.NORMAL)
-                metadata.setdefault("group_earliest_timestamp", MAX_TIMESTAMP)
-                self._queue.append(task)  
-
-        self._queue = [val for i, val in enumerate(self._queue) if i not in indexes_to_remove]
         
         return self.size
 
