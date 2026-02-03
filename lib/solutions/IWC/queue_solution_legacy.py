@@ -95,11 +95,11 @@ class Queue:
         tasks_to_add = [*self._collect_dependencies(item), item]
 
         indexes_to_remove = []
-        breakpoint()
         for task in tasks_to_add:
-            add_task = False
+            task_exists = False
             for i, existing_task in enumerate(self._queue):
                 if task.provider == existing_task.provider and task.user_id == existing_task.user_id:
+                    task_exists = True
                     if task.timestamp >= existing_task.timestamp:
                         break
                     else:
@@ -108,6 +108,12 @@ class Queue:
                         metadata.setdefault("priority", Priority.NORMAL)
                         metadata.setdefault("group_earliest_timestamp", MAX_TIMESTAMP)
                         self._queue.append(task)
+            
+            if not task_exists:
+                metadata = task.metadata
+                metadata.setdefault("priority", Priority.NORMAL)
+                metadata.setdefault("group_earliest_timestamp", MAX_TIMESTAMP)
+                self._queue.append(task)  
 
         self._queue = [val for i, val in enumerate(self._queue) if i not in indexes_to_remove]
         
@@ -255,7 +261,3 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
-
-
-
-
