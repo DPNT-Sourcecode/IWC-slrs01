@@ -20,6 +20,10 @@ def test_dedupe():
     queue.enqueue(task1)
     queue.enqueue(task2)
 
+    assert queue._queue[0].timestamp == datetime.strptime('2025-10-20 12:00:00', "%Y-%m-%d %H:%M:%S")
+    assert queue.dequeue() == TaskDispatch(provider="companies_house", user_id=1)
+    assert queue.dequeue() == None
+
 
 def test_rule_of_three():
     task1 = TaskSubmission(
@@ -85,3 +89,4 @@ def test_dependency_resolution():
 
     assert queue.dequeue() == TaskDispatch(provider="companies_house", user_id=1)
     assert queue.dequeue() == TaskDispatch(provider="credit_check", user_id=1)
+
