@@ -2,12 +2,40 @@ from solutions.IWC.queue_solution_legacy import Queue
 from solutions.IWC.task_types import TaskDispatch, TaskSubmission
 from datetime import datetime
 
-# 1. Enqueue: user_id=1, provider="bank_statements", timestamp='2025-10-20 12:00:00' -> 1 (queue size)
-# 2. Enqueue: user_id=1, provider="id_verification", timestamp='2025-10-20 12:01:00' -> 2 (queue size)  
-# 3. Enqueue: user_id=2, provider="companies_house", timestamp='2025-10-20 12:02:00' -> 3 (queue size)  
-# 4. Dequeue -> {"user_id": 1, "provider": "id_verification"}  
-# 5. Dequeue -> {"user_id": 2, "provider": "companies_house"}  
-# 6. Dequeue -> {"user_id": 1, "provider": "bank_statements"}  
+# id = IWC_R3_S2_001, req = enqueue({"provider":"bank_statements","timestamp":"2025-10-20 12:00:00","user_id":1}), resp = 1
+# id = IWC_R3_S2_002, req = enqueue({"provider":"id_verification","timestamp":"2025-10-20 12:00:00","user_id":1}), resp = 2
+# id = IWC_R3_S2_003, req = enqueue({"provider":"companies_house","timestamp":"2025-10-20 12:00:00","user_id":2}), resp = 3
+# id = IWC_R3_S2_004, req = dequeue(), resp = {"provider":"bank_statements","user_id":1}
+# id = IWC_R3_S2_005, req = dequeue(), resp = {"provider":"id_verification","user_id":1}
+# id = IWC_R3_S2_006, req = dequeue(), resp = {"provider":"companies_house","user_id":2}
+
+
+def test_bank_statement_deprio_with_two_user():
+    task1 = TaskSubmission(
+        user_id=1,
+        provider="bank_statements",
+        timestamp=datetime.strptime('2025-10-20 12:00:00', "%Y-%m-%d %H:%M:%S")
+    )
+    task2 = TaskSubmission(
+        user_id=1,
+        provider="id_verification",
+        timestamp=datetime.strptime('2025-10-20 12:00:00', "%Y-%m-%d %H:%M:%S")
+    )
+    task3 = TaskSubmission(
+        user_id=2,
+        provider="companies_house",
+        timestamp=datetime.strptime('2025-10-20 12:00:00', "%Y-%m-%d %H:%M:%S")
+    )
+
+    queue = Queue()
+    queue.enqueue(task1)
+    queue.enqueue(task2)
+    queue.enqueue(task3)
+
+    assert queue.dequeue() == TaskDispatch(provider="id_verification", user_id=1)
+    assert queue.dequeue() == TaskDispatch(provider="companies_house", user_id=2)
+    assert queue.dequeue() == TaskDispatch(provider="bank_statements", user_id=1)
+
 
 def test_bank_statements_deprio_with_rule_of_three():
     task1 = TaskSubmission(
@@ -212,3 +240,4 @@ def test_bank_statements_deprio_with_rule_of_three():
 
 #     assert queue.dequeue() == TaskDispatch(provider="companies_house", user_id=1)
 #     assert queue.dequeue() == TaskDispatch(provider="credit_check", user_id=1)
+
