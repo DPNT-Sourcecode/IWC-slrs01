@@ -136,7 +136,7 @@ class Queue:
     
         if self.size == 0:
             return None
-
+        breakpoint()
         user_ids = {task.user_id for task in self._queue}
         task_count = {}
         priority_timestamps = {}
@@ -174,7 +174,7 @@ class Queue:
             if task.provider == "bank_statements" and self.age >= 300 and sorted(self._queue, key=lambda i: (i.timestamp, i.provider))[0] == task:
                 metadata["priority"] = Priority.FORCE_NEXT
 
-
+        breakpoint()
         self._queue.sort(
             key=lambda i: (
                 self._priority_for_task(i),
@@ -302,5 +302,6 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
