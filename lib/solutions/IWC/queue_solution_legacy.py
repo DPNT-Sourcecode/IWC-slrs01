@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 from enum import IntEnum
+from operator import attrgetter
 
 # LEGACY CODE ASSET
 # RESOLVED on deploy
@@ -187,10 +188,10 @@ class Queue:
         if len(self._queue) == 0 or len(self._queue) == 1:
             return 0
 
-        queue_by_date = sorted(self._queue)
+        queue_by_date = sorted(self._queue, key=attrgetter("timestamp"))
         time_diff = queue_by_date[0].timestamp - queue_by_date[len(queue_by_date)-1].timestamp
 
-        return time_diff.total_seconds()
+        return abs(time_diff.total_seconds())
 
 
     def purge(self):
@@ -280,4 +281,5 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
