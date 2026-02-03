@@ -142,7 +142,7 @@ class Queue:
             earliest_timestamp = sorted(user_tasks, key=lambda t: t.timestamp)[0].timestamp
             priority_timestamps[user_id] = earliest_timestamp
             task_count[user_id] = len(user_tasks)
-        breakpoint()
+
         for task in self._queue:
             metadata = task.metadata
             current_earliest = metadata.get("group_earliest_timestamp", MAX_TIMESTAMP)
@@ -299,4 +299,5 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
