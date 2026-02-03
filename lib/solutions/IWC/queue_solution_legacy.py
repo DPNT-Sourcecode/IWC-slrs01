@@ -126,7 +126,7 @@ class Queue:
         return self.size
 
     def calculate_bank_statement_priority(self):
-        ...
+        queue_by_date = sorted(self._queue, key=attrgetter("timestamp"))
         
 
     def dequeue(self):
@@ -152,8 +152,8 @@ class Queue:
             except (TypeError, ValueError):
                 priority_level = None
             
-            if task.provider == "bank_statements" and self.age >= 300:
-                metadata["priority"] = Priority.HIGH
+            if task.provider == "bank_statements" and self.age >= 300 and sorted(self._queue, key=attrgetter("timestamp"))[0] == task:
+                metadata["priority"] = Priority.NORMAL
             if priority_level is None or priority_level == Priority.NORMAL or priority_level == Priority.LOW:
                 metadata["group_earliest_timestamp"] = MAX_TIMESTAMP
                 if task_count[task.user_id] >= 3:
@@ -297,3 +297,4 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
