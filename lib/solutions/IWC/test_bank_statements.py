@@ -58,10 +58,10 @@ def test_something():
     queue.enqueue(task5)
     queue.enqueue(task6)
 
+    assert queue.dequeue() == TaskDispatch(provider="companies_house", user_id=2)
     assert queue.dequeue() == TaskDispatch(provider="bank_statements", user_id=1)
-    assert queue.dequeue() == TaskDispatch(provider="companies_house", user_id=1)
-    assert queue.dequeue() == TaskDispatch(provider="id_verification", user_id=6)
-    assert queue.dequeue() == TaskDispatch(provider="bank_statements", user_id=1)
+    assert queue.dequeue() == TaskDispatch(provider="id_verification", user_id=2)
+    assert queue.dequeue() == TaskDispatch(provider="bank_statements", user_id=2)
     assert queue.dequeue() == TaskDispatch(provider="companies_house", user_id=1)
     assert queue.dequeue() == TaskDispatch(provider="id_verification", user_id=6)
 
@@ -281,5 +281,6 @@ def test_time_sesative_bank_statments_with_later():
     assert queue.dequeue() == TaskDispatch(provider="id_verification", user_id=2)
     assert queue.dequeue() == TaskDispatch(provider="companies_house", user_id=3)
     assert queue.dequeue() == TaskDispatch(provider="bank_statements", user_id=2)
+
 
 
