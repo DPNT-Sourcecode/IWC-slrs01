@@ -8,7 +8,7 @@ from datetime import datetime
 # id = IWC_R5_S6_003, req = enqueue({"provider":"id_verification","timestamp":"2025-10-20 12:06:00","user_id":2}), resp = 3
 # id = IWC_R5_S6_004, req = enqueue({"provider":"bank_statements","timestamp":"2025-10-20 12:07:00","user_id":2}), resp = 4
 
-def test_strings():
+def test_rule_of_3_with_bank_statement_prio():
     task1 = TaskSubmission(
         user_id=1,
         provider="bank_statements",
@@ -36,10 +36,10 @@ def test_strings():
     queue.enqueue(task3)
     queue.enqueue(task4)
 
-    assert queue.dequeue() == TaskDispatch(provider="companies_house", user_id=1)
-    assert queue.dequeue() == TaskDispatch(provider="credit_check", user_id=1)
     assert queue.dequeue() == TaskDispatch(provider="bank_statements", user_id=1)
-    assert queue.dequeue() == TaskDispatch(provider="id_verification", user_id=1)
+    assert queue.dequeue() == TaskDispatch(provider="companies_house", user_id=2)
+    assert queue.dequeue() == TaskDispatch(provider="id_verification", user_id=2)
+    assert queue.dequeue() == TaskDispatch(provider="bank_statements", user_id=2)
 
 
 
@@ -193,6 +193,3 @@ def test_time_sesative_bank_statments_with_later():
     assert queue.dequeue() == TaskDispatch(provider="id_verification", user_id=2)
     assert queue.dequeue() == TaskDispatch(provider="companies_house", user_id=3)
     assert queue.dequeue() == TaskDispatch(provider="bank_statements", user_id=2)
-
-
-
