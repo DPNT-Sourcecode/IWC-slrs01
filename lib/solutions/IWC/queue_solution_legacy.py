@@ -183,7 +183,15 @@ class Queue:
 
     @property
     def age(self):
-        return 0
+        
+        if len(self._queue) == 0 or len(self._queue) == 1:
+            return 0
+
+        queue_by_date = sorted(self._queue)
+        time_diff = queue_by_date[0].timestamp - queue_by_date[len(queue_by_date)-1].timestamp
+
+        return time_diff.total_seconds()
+
 
     def purge(self):
         self._queue.clear()
@@ -272,3 +280,4 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
