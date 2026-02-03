@@ -130,7 +130,7 @@ class Queue:
         
 
     def dequeue(self):
-
+    
         if self.size == 0:
             return None
 
@@ -142,7 +142,7 @@ class Queue:
             earliest_timestamp = sorted(user_tasks, key=lambda t: t.timestamp)[0].timestamp
             priority_timestamps[user_id] = earliest_timestamp
             task_count[user_id] = len(user_tasks)
-
+        breakpoint()
         for task in self._queue:
             metadata = task.metadata
             current_earliest = metadata.get("group_earliest_timestamp", MAX_TIMESTAMP)
@@ -152,8 +152,7 @@ class Queue:
             except (TypeError, ValueError):
                 priority_level = None
             
-            if task.provider == "bank_statements" and self.age >= 300 and sorted(self._queue, key=attrgetter("timestamp"))[0] == task:
-                metadata["priority"] = Priority.NORMAL
+
             if priority_level is None or priority_level == Priority.NORMAL or priority_level == Priority.LOW:
                 metadata["group_earliest_timestamp"] = MAX_TIMESTAMP
                 if task_count[task.user_id] >= 3:
@@ -168,6 +167,9 @@ class Queue:
             else:
                 metadata["group_earliest_timestamp"] = current_earliest
                 metadata["priority"] = priority_level
+
+            if task.provider == "bank_statements" and self.age >= 300 and sorted(self._queue, key=attrgetter("timestamp"))[0] == task:
+                metadata["priority"] = Priority.HIGH
 
 
         self._queue.sort(
