@@ -20,7 +20,7 @@ def test_dedupe():
         provider="id_verification",
         timestamp=datetime.strptime('2025-10-20 12:05:00', "%Y-%m-%d %H:%M:%S")
     )
-    breakpoint()
+    
     queue = Queue()
     queue.enqueue(task1)
     queue.enqueue(task2)
@@ -96,6 +96,7 @@ def test_dependency_resolution():
 
     assert queue.dequeue() == TaskDispatch(provider="companies_house", user_id=1)
     assert queue.dequeue() == TaskDispatch(provider="credit_check", user_id=1)
+
 
 
 

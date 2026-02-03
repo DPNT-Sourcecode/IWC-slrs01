@@ -96,7 +96,7 @@ class Queue:
             if task.provider == item.provider and task.user_id == item.user_id:
                 if task.timestamp >= item.timestamp:
                     self._queue.pop(i)
-                break
+                return self.size
                 
         tasks = [*self._collect_dependencies(item), item]
 
@@ -249,5 +249,6 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
