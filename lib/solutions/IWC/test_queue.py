@@ -2,13 +2,24 @@ from solutions.IWC.queue_solution_legacy import Queue
 from solutions.IWC.task_types import TaskDispatch, TaskSubmission
 from datetime import datetime
 
-# id = IWC_R3_S2_001, req = enqueue({"provider":"bank_statements","timestamp":"2025-10-20 12:00:00","user_id":1}), resp = 1
-# id = IWC_R3_S2_002, req = enqueue({"provider":"id_verification","timestamp":"2025-10-20 12:00:00","user_id":1}), resp = 2
-# id = IWC_R3_S2_003, req = enqueue({"provider":"companies_house","timestamp":"2025-10-20 12:00:00","user_id":2}), resp = 3
-# id = IWC_R3_S2_004, req = dequeue(), resp = {"provider":"bank_statements","user_id":1}
-# id = IWC_R3_S2_005, req = dequeue(), resp = {"provider":"id_verification","user_id":1}
-# id = IWC_R3_S2_006, req = dequeue(), resp = {"provider":"companies_house","user_id":2}
 
+def test_age():
+    task1 = TaskSubmission(
+        user_id=1,
+        provider="id_verification",
+        timestamp=datetime.strptime('2025-10-20 12:00:00', "%Y-%m-%d %H:%M:%S")
+    )
+    task2 = TaskSubmission(
+        user_id=1,
+        provider="id_verification",
+        timestamp=datetime.strptime('2025-10-20 12:05:00', "%Y-%m-%d %H:%M:%S")
+    )
+
+    queue = Queue()
+    queue.enqueue(task1)
+    queue.enqueue(task2)
+
+    assert queue.age == 300
 
 def test_bank_statement_deprio_with_two_user():
     task1 = TaskSubmission(
