@@ -125,6 +125,7 @@ class Queue:
         return self.size
 
     def dequeue(self):
+        breakpoint()
         if self.size == 0:
             return None
 
@@ -157,6 +158,7 @@ class Queue:
                 metadata["group_earliest_timestamp"] = current_earliest
                 metadata["priority"] = priority_level
 
+        breakpoint()
         self._queue.sort(
             key=lambda i: (
                 self._priority_for_task(i),
