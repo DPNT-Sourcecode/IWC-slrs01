@@ -97,17 +97,17 @@ class Queue:
         indexes_to_remove = []
         breakpoint()
         for task in tasks_to_add:
+            add_task = False
             for i, existing_task in enumerate(self._queue):
                 if task.provider == existing_task.provider and task.user_id == existing_task.user_id:
                     if task.timestamp >= existing_task.timestamp:
-                        continue
+                        break
                     else:
                         indexes_to_remove.append(i)
-
-            metadata = task.metadata
-            metadata.setdefault("priority", Priority.NORMAL)
-            metadata.setdefault("group_earliest_timestamp", MAX_TIMESTAMP)
-            self._queue.append(task)
+                        metadata = task.metadata
+                        metadata.setdefault("priority", Priority.NORMAL)
+                        metadata.setdefault("group_earliest_timestamp", MAX_TIMESTAMP)
+                        self._queue.append(task)
 
         self._queue = [val for i, val in enumerate(self._queue) if i not in indexes_to_remove]
         
@@ -255,6 +255,7 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
 
