@@ -102,6 +102,12 @@ class Queue:
         tasks = [*self._collect_dependencies(item), item]
 
         for task in tasks:
+
+            for existing_task in self._queue:
+                if task.provider == existing_task.provider and task.user_id == existing_task.user_id:
+                    if task.timestamp >= existing_task.timestamp:
+                        continue
+
             metadata = task.metadata
             metadata.setdefault("priority", Priority.NORMAL)
             metadata.setdefault("group_earliest_timestamp", MAX_TIMESTAMP)
@@ -250,3 +256,4 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
