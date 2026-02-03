@@ -117,6 +117,7 @@ class Queue:
                 if self._queue[duplicate_task_index].timestamp > task.timestamp:
                     metadata = task.metadata
                     metadata.setdefault("priority", Priority.NORMAL)
+                    metadata.setdefault("force_next", False)
                     metadata.setdefault("group_earliest_timestamp", MAX_TIMESTAMP)
                     self._queue[duplicate_task_index] = task
 
@@ -136,7 +137,6 @@ class Queue:
     
         if self.size == 0:
             return None
-        breakpoint()
         user_ids = {task.user_id for task in self._queue}
         task_count = {}
         priority_timestamps = {}
@@ -171,10 +171,14 @@ class Queue:
                 metadata["group_earliest_timestamp"] = current_earliest
                 metadata["priority"] = priority_level
 
-            if task.provider == "bank_statements" and self.age >= 300 and sorted(self._queue, key=lambda i: (i.timestamp, i.provider))[0] == task:
+            # Note this needs to be forced when available
+            if task.provider == "bank_statements" and self.age >= 300:
+                metadata["force_next"] = True
+            
+            if task.provider == "bank_statements" and metadata["force_next"] and sorted(self._queue, key=lambda i: (i.timestamp, i.provider))[0] == task:
                 metadata["priority"] = Priority.FORCE_NEXT
 
-        breakpoint()
+  
         self._queue.sort(
             key=lambda i: (
                 self._priority_for_task(i),
@@ -302,6 +306,3 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
-
-
-
