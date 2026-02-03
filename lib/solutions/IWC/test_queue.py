@@ -32,6 +32,22 @@ def test_dedupe():
     assert queue.dequeue() == None
 
 
+
+def test_with_one_task():
+    task1 = TaskSubmission(
+        user_id=1,
+        provider="bank_statements",
+        timestamp=datetime.strptime('2025-10-20 12:00:00', "%Y-%m-%d %H:%M:%S")
+    )
+ 
+    queue = Queue()
+    queue.enqueue(task1)
+
+    assert queue._queue[0].timestamp == datetime.strptime('2025-10-20 12:00:00', "%Y-%m-%d %H:%M:%S")
+    assert queue.dequeue() == TaskDispatch(provider="bank_statements", user_id=1)
+    assert queue.dequeue() == None
+
+
 def test_rule_of_three():
     task1 = TaskSubmission(
         user_id=1,
@@ -96,6 +112,7 @@ def test_dependency_resolution():
 
     assert queue.dequeue() == TaskDispatch(provider="companies_house", user_id=1)
     assert queue.dequeue() == TaskDispatch(provider="credit_check", user_id=1)
+
 
 
 
