@@ -99,8 +99,13 @@ class Queue:
                 return i
         return None
     
+    
+    
     def enqueue(self, item: TaskSubmission) -> int:
         
+        if isinstance(item.timestamp, str):
+            item.timestamp = datetime.strptime(item.timestamp, "%Y-%m-%d %H:%M:%S")
+
         tasks_to_add = [*self._collect_dependencies(item), item]
 
         for task in tasks_to_add:
@@ -125,9 +130,6 @@ class Queue:
         
         return self.size
 
-    def calculate_bank_statement_priority(self):
-        queue_by_date = sorted(self._queue, key=attrgetter("timestamp"))
-        
 
     def dequeue(self):
     
@@ -299,5 +301,6 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
