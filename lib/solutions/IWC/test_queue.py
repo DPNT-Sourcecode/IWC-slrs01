@@ -30,8 +30,11 @@ def test_dedupe_credit_check():
 
     queue = Queue()
     queue.enqueue(task1)
+    assert len(queue._queue) == 1
     queue.enqueue(task2)
+    assert len(queue._queue) == 2
     queue.enqueue(task3)
+    assert len(queue._queue) == 3
 
     assert queue.dequeue() == TaskDispatch(provider="companies_house", user_id=1)
     assert queue.dequeue() == TaskDispatch(provider="credit_check", user_id=1)
@@ -146,5 +149,6 @@ def test_dependency_resolution():
 
     assert queue.dequeue() == TaskDispatch(provider="companies_house", user_id=1)
     assert queue.dequeue() == TaskDispatch(provider="credit_check", user_id=1)
+
 
 
