@@ -49,14 +49,26 @@ def test_something():
         timestamp='2025-10-20 12:09:00'
     )
 
-# id = IWC_R5_S5_001, req = enqueue({"provider":"companies_house","timestamp":"2025-10-20 12:00:00","user_id":1}), resp = 1
-# id = IWC_R5_S5_002, req = enqueue({"provider":"bank_statements","timestamp":"2025-10-20 12:00:00","user_id":1}), resp = 2
-# id = IWC_R5_S5_003, req = enqueue({"provider":"id_verification","timestamp":"2025-10-20 12:06:00","user_id":6}), resp = 3
-# id = IWC_R5_S5_004, req = dequeue(), resp = {"provider":"companies_house","user_id":1}
-# id = IWC_R5_S5_005, req = dequeue(), resp = {"provider":"bank_statements","user_id":1}
+
+    queue = Queue()
+    queue.enqueue(task1)
+    queue.enqueue(task2)
+    queue.enqueue(task3)
+    queue.enqueue(task4)
+    queue.enqueue(task5)
+    queue.enqueue(task6)
+
+    assert queue.dequeue() == TaskDispatch(provider="bank_statements", user_id=1)
+    assert queue.dequeue() == TaskDispatch(provider="companies_house", user_id=1)
+    assert queue.dequeue() == TaskDispatch(provider="id_verification", user_id=6)
+    assert queue.dequeue() == TaskDispatch(provider="bank_statements", user_id=1)
+    assert queue.dequeue() == TaskDispatch(provider="companies_house", user_id=1)
+    assert queue.dequeue() == TaskDispatch(provider="id_verification", user_id=6)
 
 
-def test_this():
+
+
+def test_bank_first_if_same_timestamp():
     task1 = TaskSubmission(
         user_id=1,
         provider="companies_house",
@@ -79,7 +91,7 @@ def test_this():
     queue.enqueue(task3)
 
     assert queue.dequeue() == TaskDispatch(provider="bank_statements", user_id=1)
-    assert queue.dequeue() == TaskDispatch(provider="companies_house", user_id=2)
+    assert queue.dequeue() == TaskDispatch(provider="companies_house", user_id=1)
     assert queue.dequeue() == TaskDispatch(provider="id_verification", user_id=6)
 
 
@@ -269,4 +281,5 @@ def test_time_sesative_bank_statments_with_later():
     assert queue.dequeue() == TaskDispatch(provider="id_verification", user_id=2)
     assert queue.dequeue() == TaskDispatch(provider="companies_house", user_id=3)
     assert queue.dequeue() == TaskDispatch(provider="bank_statements", user_id=2)
+
 
