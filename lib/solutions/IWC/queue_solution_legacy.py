@@ -128,6 +128,7 @@ class Queue:
                 else:
                     metadata.setdefault("priority", Priority.NORMAL)
                 metadata.setdefault("group_earliest_timestamp", MAX_TIMESTAMP)
+                metadata.setdefault("force_next", False)
                 self._queue.append(task)  
         
         return self.size
@@ -306,3 +307,4 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
