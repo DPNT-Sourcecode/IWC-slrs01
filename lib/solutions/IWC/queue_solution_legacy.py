@@ -90,14 +90,36 @@ class Queue:
             return datetime.fromisoformat(timestamp).replace(tzinfo=None)
         return timestamp
 
+    def get_duplicate_task(self, task: TaskSubmission) -> int | None:
+        for i, existing_task in enumerate(self._queue):
+            if task.provider == existing_task.provider and task.user_id == existing_task.user_id:
+                return i
+        return None
+    
     def enqueue(self, item: TaskSubmission) -> int:
                 
         tasks_to_add = [*self._collect_dependencies(item), item]
 
         indexes_to_remove = []
+
         for task in tasks_to_add:
+
+            duplicate_task_index = self.get_duplicate_task(task)
+
+            if duplicate_task_index:
+                if self._queue[duplicate_task_index].timestamp > task.timestamp:
+                    # replace
+            else:
+                metadata = task.metadata
+                metadata.setdefault("priority", Priority.NORMAL)
+                metadata.setdefault("group_earliest_timestamp", MAX_TIMESTAMP)
+                self._queue.append(task)  
+
+
+
             task_exists = False
             for i, existing_task in enumerate(self._queue):
+                 
                 if task.provider == existing_task.provider and task.user_id == existing_task.user_id:
                     task_exists = True
                     if task.timestamp >= existing_task.timestamp:
@@ -261,3 +283,4 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
