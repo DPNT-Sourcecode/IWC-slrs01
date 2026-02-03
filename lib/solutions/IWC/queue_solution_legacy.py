@@ -98,14 +98,14 @@ class Queue:
     
     def enqueue(self, item: TaskSubmission) -> int:
         
-        breakpoint()
+        
         tasks_to_add = [*self._collect_dependencies(item), item]
 
         for task in tasks_to_add:
 
             duplicate_task_index = self.get_duplicate_task(task)
 
-            if duplicate_task_index:
+            if duplicate_task_index is not None:
                 if self._queue[duplicate_task_index].timestamp > task.timestamp:
                     metadata = task.metadata
                     metadata.setdefault("priority", Priority.NORMAL)
